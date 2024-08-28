@@ -1,17 +1,54 @@
-# ASP.NET Core
-# Build and test ASP.NET Core projects targeting .NET Core.
-# Add steps that run tests, create a NuGet package, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+name: 'Build de Artefato da API em .Net Core'
 
 trigger:
-- main
+  branches:
+    include:
+      - main
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: 'windows-latest'
 
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- script: dotnet build --configuration $(buildConfiguration)
-  displayName: 'dotnet build $(buildConfiguration)'
+jobs:
+  - job: BuiltestProd
+    displayName: 'Teste de produção em artefato'
+
+    steps:
+      - task: NugetToolInstaller@1
+        displayName: 'Install NuGet Tool'
+
+      - task: NugetCommand@2
+        inputs:
+          command: 'restore'
+        displayName: 'NuGet Restore'
+
+      - task: VSBuild@1
+        inputs:
+          solution: '**/*.sln'
+          msbuildArgs: '/p:Configuration=$(buildConfiguration)'
+          platform: 'Any CPU'
+          configuration: '$(buildConfiguration)'
+        displayName: 'Build Solution'
+
+      - task: VSTest@2
+        inputs:
+          testSelector: 'testAssemblies'
+          testAssemblyVer2: '**/*test*.dll'
+          searchFolder: '$(System.DefaultWorkingDirectory)'
+          testRunTitle: 'Run Unit Tests'
+        displayName: 'Run Tests'
+
+      - script: dotnet publish --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)
+        displayName: 'dotnet publish $(buildConfiguration)'
+
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'dotnet-core-eventplan'
+          publishLocation: 'Container'
+        displayName: 'Publish Build Artifacts'
+      
+      - script: dotnet build --configuration $(buildConfiguration)
+        displayName: 'dotnet build $(buildConfiguration)'
