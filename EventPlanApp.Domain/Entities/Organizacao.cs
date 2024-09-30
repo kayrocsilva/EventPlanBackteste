@@ -7,36 +7,48 @@ using System.Threading.Tasks;
 
 namespace EventPlanApp.Domain.Entities
 {
-   
-    
-        public class Organizacao
-        {
-            public int OrganizacaoId { get; set; }
 
-            [Required]
-            [StringLength(14, MinimumLength = 14, ErrorMessage = "CNPJ deve ter 14 dígitos")]
-            public string CNPJ { get; set; }
 
-            [Required]
-            [EmailAddress]
-            public string Email { get; set; }
+    public class Organizacao
+    {
+        [Key]
+        public int OrganizacaoId { get; set; }
 
-            [Required]
-            public string Senha { get; set; }
+        [Required(ErrorMessage = "CNPJ é obrigatório.")]
+        [StringLength(14, ErrorMessage = "CNPJ deve ter 14 caracteres.")]
+        public string CNPJ { get; set; }
 
-            public string TipoLogradouro { get; set; }
-            public string Logradouro { get; set; }
-            public string Numero { get; set; }
-            public string Bairro { get; set; }
-            public string Cidade { get; set; }
-            public string Estado { get; set; }
-            public string CEP { get; set; }
+        [Required(ErrorMessage = "Tipo de logradouro é obrigatório.")]
+        public string TipoLogradouro { get; set; }
 
-            public decimal NotaMedia { get; set; }
+        [Required(ErrorMessage = "Logradouro é obrigatório.")]
+        public string Logradouro { get; set; }
 
-            public ICollection<Evento> Eventos { get; set; }
-        }
-    
+        [Required(ErrorMessage = "Número do prédio é obrigatório.")]
+        [StringLength(10, ErrorMessage = "O número do prédio não pode ter mais de 10 caracteres.")]
+        public string NumeroPredio { get; set; }
+
+        [Required(ErrorMessage = "Bairro é obrigatório.")]
+        public string Bairro { get; set; }
+
+        [Required(ErrorMessage = "Cidade é obrigatória.")]
+        public string Cidade { get; set; }
+
+        [Required(ErrorMessage = "Estado é obrigatório.")]
+        [StringLength(2, ErrorMessage = "O estado deve ter 2 caracteres.")]
+        public string Estado { get; set; }
+
+        [Required(ErrorMessage = "CEP é obrigatório.")]
+        [RegularExpression(@"^\d{5}-\d{3}$", ErrorMessage = "Formato de CEP inválido.")]
+        public string CEP { get; set; }
+
+        [Range(0, 5, ErrorMessage = "Nota média deve estar entre 0 e 5.")]
+        public decimal NotaMedia { get; set; }
+
+        // Propriedade de navegação para os eventos
+        public virtual ICollection<Evento> Eventos { get; set; } = new List<Evento>(); // Relacionamento com Evento
+    }
+
 
 }
 

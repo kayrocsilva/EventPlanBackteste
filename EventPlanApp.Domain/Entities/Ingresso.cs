@@ -9,25 +9,27 @@ namespace EventPlanApp.Domain.Entities
 {
     public class Ingresso
     {
+        [Key]
         public int IngressoId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O ID do usuário final é obrigatório.")]
+        public int UsuarioFinalId { get; set; }
+
+        [Required(ErrorMessage = "O ID do evento é obrigatório.")]
+        public int EventoId { get; set; }
+
+        [Required(ErrorMessage = "O valor do ingresso é obrigatório.")]
+        [Range(0.01, double.MaxValue, ErrorMessage = "O valor do ingresso deve ser maior que zero.")]
         public decimal Valor { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "O QR Code é obrigatório.")]
+        [StringLength(200, ErrorMessage = "O QR Code não pode exceder 200 caracteres.")]
         public string QRCode { get; set; }
 
         public bool VIP { get; set; }
 
-        [Required]
-        public string NomeEvento { get; set; }
-
-        public DateTime Data { get; set; }
-
-        public int UsuarioFinalId { get; set; }
-        public UsuarioFinal UsuarioFinal { get; set; }
-
-        public int EventoId { get; set; }
-        public Evento Evento { get; set; }
+        // Propriedades de navegação
+        public virtual UsuarioFinal UsuarioFinal { get; set; }
+        public virtual Evento Evento { get; set; }
     }
 }
