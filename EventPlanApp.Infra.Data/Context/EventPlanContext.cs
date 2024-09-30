@@ -28,19 +28,22 @@ namespace EventPlanApp.Infra.Data.Context
             modelBuilder.Entity<Ingresso>()
                 .HasOne(i => i.Evento)
                 .WithMany(e => e.Ingressos)
-                .HasForeignKey(i => i.EventoId);
+                .HasForeignKey(i => i.EventoId)
+                .OnDelete(DeleteBehavior.Cascade); // Opção de deleção em cascata
 
             // Relacionamento entre UsuarioFinal e Ingresso
             modelBuilder.Entity<Ingresso>()
                 .HasOne(i => i.UsuarioFinal)
                 .WithMany(u => u.Ingressos)
-                .HasForeignKey(i => i.UsuarioFinalId);
+                .HasForeignKey(i => i.UsuarioFinalId)
+                .OnDelete(DeleteBehavior.Restrict); // Impede deleção em cascata
 
             // Relacionamento entre Organizacao e Evento
             modelBuilder.Entity<Evento>()
                 .HasOne(e => e.Organizacao)
                 .WithMany(o => o.Eventos)
-                .HasForeignKey(e => e.OrganizacaoId);
+                .HasForeignKey(e => e.OrganizacaoId)
+                .OnDelete(DeleteBehavior.Cascade); // Opção de deleção em cascata
 
             // Configurações adicionais podem ser adicionadas aqui
         }

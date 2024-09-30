@@ -9,19 +9,23 @@ namespace EventPlanApp.Domain.Entities
 {
     public class UsuarioAdm
     {
+        [Key]
         public int AdmId { get; set; }
 
-        [Required]
-        [EmailAddress]
+        [Required(ErrorMessage = "Nome do usuário é obrigatório.")]
+        [StringLength(100, ErrorMessage = "O nome do usuário não pode ter mais de 100 caracteres.")]
+        public string Nome { get; set; }
+
+        [Required(ErrorMessage = "Email é obrigatório.")]
+        [EmailAddress(ErrorMessage = "Formato de e-mail inválido.")]
         public string Email { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Senha é obrigatória.")]
+        [StringLength(100, MinimumLength = 6, ErrorMessage = "A senha deve ter pelo menos 6 caracteres.")]
         public string Senha { get; set; }
 
-        [Phone]
-        public string Telefone { get; set; }
-
-        [Required]
-        public string NomeUsuario { get; set; }
+        [Required(ErrorMessage = "Número de telefone é obrigatório.")]
+        [Phone(ErrorMessage = "Formato de telefone inválido.")]
+        public string NumeroTelefone { get; set; }
     }
 }
